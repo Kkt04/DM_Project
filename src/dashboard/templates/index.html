@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Research Trends Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            margin: 25px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: fadeInUp 0.8s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+
+        .card-header i {
+            font-size: 2em;
+            margin-right: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-header h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .card-description {
+            color: #718096;
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 1.1em;
+        }
+
+        .input-group input[type="text"] {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.05em;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-group input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group button {
+            padding: 16px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .input-group button:active {
+            transform: translateY(0);
+        }
+
+        .input-group button i {
+            margin-left: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-info {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 12px;
+            margin-bottom: 25px;
+            color: #2d3748;
+            font-size: 1.05em;
+            font-weight: 500;
+            display: none;
+        }
+
+        .results-info.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-info.error {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .results-info i {
+            margin-right: 8px;
+        }
+
+        #wordcloud-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-container {
+            background: linear-gradient(135deg, #f6f8fc 0%, #f1f4f9 100%);
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .image-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .info-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #ebf4ff;
+            color: #3182ce;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .info-badge:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .info-badge:active {
+            transform: translateY(0);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-wrapper {
+                width: 100%;
+            }
+        }
+
+        code {
+            background: #f7fafc;
+            padding: 3px 8px;
+            border-radius: 5px;
+            color: #667eea;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-chart-line"></i> Scientific Research Trends</h1>
+        <p>Interactive visualization dashboard for exploring academic publication patterns and keyword relationships</p>
+    </div>
+
+    <div class="container">
+        <!-- Word Cloud Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-cloud"></i>
+                <h2>Interactive Keyword Co-occurrence</h2>
+            </div>
+            <p class="card-description">
+                Discover research trends by exploring keyword relationships. Enter any scientific term to visualize 
+                the most frequently co-occurring words in research paper titles and abstracts.
+            </p>
+
+            <div style="margin-bottom: 15px;">
+                <span class="info-badge" onclick="fillKeyword('quantum computing')"><i class="fas fa-lightbulb"></i> Try: quantum computing</span>
+                <span class="info-badge" onclick="fillKeyword('machine learning')"><i class="fas fa-lightbulb"></i> Try: machine learning</span>
+                <span class="info-badge" onclick="fillKeyword('CRISPR')"><i class="fas fa-lightbulb"></i> Try: CRISPR</span>
+            </div>
+
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="keyword-input" placeholder="Enter a keyword or phrase..." onkeypress="if(event.key==='Enter') generateCloud()">
+                </div>
+                <button onclick="generateCloud()">
+                    Generate Word Cloud<i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="loading" id="loading-message">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Analyzing research papers...</div>
+            </div>
+
+            <div class="results-info" id="results-info"></div>
+
+            <div class="image-container" id="image-container">
+                <img id="wordcloud-image" src="" alt="Word Cloud Visualization">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fillKeyword(keyword) {
+            const inputElement = document.getElementById('keyword-input');
+            inputElement.value = keyword;
+            inputElement.focus();
+        }
+
+        function generateCloud() {
+            const keyword = document.getElementById('keyword-input').value;
+            const imageElement = document.getElementById('wordcloud-image');
+            const imageContainer = document.getElementById('image-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const resultsInfo = document.getElementById('results-info');
+
+            if (!keyword) {
+                resultsInfo.className = 'results-info error show';
+                resultsInfo.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a keyword to search.';
+                return;
+            }
+
+            // Reset states
+            imageContainer.classList.remove('show');
+            resultsInfo.classList.remove('show', 'error');
+            loadingMessage.style.display = 'block';
+
+            fetch('/wordcloud', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `word=${encodeURIComponent(keyword)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingMessage.style.display = 'none';
+                if (data.error) {
+                    resultsInfo.className = 'results-info error show';
+                    resultsInfo.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${data.error}`;
+                } else {
+                    imageElement.src = data.image;
+                    imageContainer.classList.add('show');
+                    resultsInfo.className = 'results-info show';
+                    resultsInfo.innerHTML = `<i class="fas fa-check-circle"></i> Word cloud generated from <strong>${data.count}</strong> relevant research papers.`;
+                }
+            })
+            .catch(error => {
+                loadingMessage.style.display = 'none';
+                resultsInfo.className = 'results-info error show';
+                resultsInfo.innerHTML = '<i class="fas fa-times-circle"></i> An unexpected error occurred. Please try again.';
+                console.error('Error:', error);
+            });
+        }
+
+        // Add enter key support
+        document.getElementById('keyword-input').focus();
+    </script>
+</body>
+</html>
+
