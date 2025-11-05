@@ -43,7 +43,7 @@ We are analyzing large-scale scientific publication data from **arXiv** and **Se
 
 ```bash
 # Clone and install
-git clone https://github.com/Kkt04/DM_Project.git
+git clone https://github.com/username/DM_Project
 cd DM_Project
 python3 -m venv venv
 source venv/bin/activate
@@ -128,16 +128,6 @@ We commit frequently with clear messages:
 
 Work on feature branches and merge to `main` after review.
 
-## Evaluation Criteria
-
-| Criterion | Marks | Documentation |
-|-----------|-------|---------------|
-| Work Planning & Division | 15 | `docs/01_Work_Planning_and_Division.md` |
-| Problem Understanding | 20 | `docs/02_Problem_Understanding_and_Identification.md` |
-| Data Pre-processing | 10 | `src/data_acquisition/arxiv_dataset.py` |
-| Innovation in Hypotheses | 20 | `docs/03_Research_Methodology...md` |
-| Research Methodology | 20 | `docs/03_Research_Methodology...md` |
-| Consistency (Git) | 15 | Git history |
 
 ## License
 
